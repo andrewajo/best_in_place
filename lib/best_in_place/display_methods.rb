@@ -16,6 +16,7 @@ module BestInPlace
     end
 
     @@table = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @@update_with_table = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
 
     def lookup(klass, attr)
       foo = @@table[klass.to_s][attr.to_s]
@@ -29,5 +30,10 @@ module BestInPlace
     def add_helper_method(klass, attr, helper_method)
       @@table[klass.to_s][attr.to_s] = Renderer.new :method => helper_method.to_sym, :type => :helper, :attr => attr
     end
+    
+    def add_sibling_attributes(klass, attr, siblings)
+      @@update_with_table[klass.to_s][attr.to_s] = Array(siblings).map(&:to_sym)
+    end
+    
   end
 end

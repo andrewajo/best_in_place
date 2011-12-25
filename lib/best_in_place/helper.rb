@@ -13,6 +13,10 @@ module BestInPlace
       opts[:type] ||= :input
       opts[:collection] ||= []
       field = field.to_s
+      
+      if opts[:update_with]
+        BestInPlace::DisplayMethods.add_update_with(object.class.to_s, field, opts[:update_with])
+      end
 
       value = build_value_for(object, field, opts)
 
