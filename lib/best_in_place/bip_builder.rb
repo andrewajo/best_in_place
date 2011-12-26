@@ -9,7 +9,7 @@ module BestInPlace
       @options = options
     end
     
-    [:input, :textarea, :select, :checkbox, :date, :no_edit].each{ |method| define_method(method){ |field, *opts| bip(method, field, *opts) }}
+    [:input, :textarea, :select, :checkbox, :date, :no_edit, :date].each{ |method| define_method(method){ |field, *opts| bip(method, field, *opts) }}
     
     def best_in_place field, opts={}
       if opts[:display_as] && opts[:display_with]
