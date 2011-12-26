@@ -56,7 +56,7 @@ Options:
 - **:inner_class**: Class that is set to the rendered form.
 - **:display_as**: A model method which will be called in order to display
   this field.
-- **:if**: A expression returning a boolean. With this options best_in_place is equivalent to best_in_place_if. Useful with the block syntax.
+- **:if**: An expression returning a boolean. With this options best_in_place is equivalent to best_in_place_if. Useful with the block syntax.
 - **:update_with**: A symbol or an array of symbols : attributes to be updated together. If an attribute is not editable, the block syntax must be used.
 
 ###best_in_place_if
@@ -83,8 +83,8 @@ Otherwise, we will have the same outcome as:
 It is a very useful feature to use with, for example, [Ryan Bates](https://github.com/ryanb)' [CanCan](https://github.com/ryanb/cancan), so we only allow BIP edition if the current user has permission to do it.
 
 ### best_in_place, best_in_place_if &block
-** best_in_place object, tag=nil, options={}, &block
-** best_in_place_if condition, object, tag=nil, options={}
+**best_in_place object, tag=nil, options={}, &block
+**best_in_place_if condition, object, tag=nil, options={}
 
 Params:
 
@@ -95,14 +95,14 @@ Params:
 
 This syntax allows to pass the object only once and mimics the way form builders work. Field types are indicated as methods on the yielded variables.
 
-  <% best_in_place @user, :td do |bip| %>
-    <%= bip.input :name %>
-    <%= bip.select :role, :collection => User::ROLES, :if => current_user.admin? %>
-  <% end %>
+    <% best_in_place @user, :td do |bip| %>
+      <%= bip.input :name %>
+      <%= bip.select :role, :collection => User::ROLES, :if => current_user.admin? %>
+    <% end %>
   
 To indicate a field is not editable, you can use the no_edit method :
 
-  <%= bip.no_edit :activated %>
+    <%= bip.no_edit :activated %>
 
 ---
 
