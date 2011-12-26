@@ -35,5 +35,10 @@ module BestInPlace
       @@update_with_table[klass.to_s][attr.to_s] = Array(siblings).map(&:to_sym)
     end
     
+    def lookup_siblings klass, attr
+      foo = @@update_with_table[klass.to_s][attr.to_s]
+      foo == {} ? nil : foo
+    end
+    
   end
 end

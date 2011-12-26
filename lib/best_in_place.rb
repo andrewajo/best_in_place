@@ -1,4 +1,5 @@
 require "best_in_place/utils"
+require "best_in_place/bip_builder"
 require "best_in_place/helper"
 require "best_in_place/engine"
 require "best_in_place/controller_extensions"
