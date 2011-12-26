@@ -11,27 +11,6 @@ module BestInPlace
     
     [:input, :textarea, :select, :checkbox, :date, :no_edit].each{ |method| define_method(method){ |field, *opts| bip(method, field, *opts) }}
     
-  #protected
-    
-    def method_missing *args, &block
-      @template.send *args, &block
-    end
-    
-    def tag &block
-      return yield unless @tag
-      content_tag @tag, @options do
-        yield
-      end
-    end
-    
-    def bip method, field, opts={}
-      method = :no_edit unless @condition
-      opts.merge!(:type => method)
-      tag do
-        opts.has_key?(:if) ? best_in_place_if(opts[:if], field, opts) : best_in_place(field, opts)
-      end
-    end
-    
     def best_in_place field, opts={}
       if opts[:display_as] && opts[:display_with]
         raise ArgumentError, "Can't use both 'display_as' and 'display_with' options at the same time"
@@ -92,6 +71,23 @@ module BestInPlace
       best_in_place(field, opts)
     end
     
+  protected
+    
+    def bip method, field, opts={}
+      method = :no_edit unless @condition
+      opts.merge!(:type => method)
+      tag do
+        opts.has_key?(:if) ? best_in_place_if(opts[:if], field, opts) : best_in_place(field, opts)
+      end
+    end
+    
+    def tag &block
+      return yield unless @tag
+      content_tag @tag, @options do
+        yield
+      end
+    end
+    
     def build_value_for(field, opts)
       if opts[:display_as]
         BestInPlace::DisplayMethods.add_model_method(@object.class.to_s, field, opts[:display_as])
@@ -104,6 +100,10 @@ module BestInPlace
       else
         @object.send(field).to_s.presence || ""
       end
+    end
+    
+    def method_missing *args, &block
+      @template.send *args, &block
     end
     
   end

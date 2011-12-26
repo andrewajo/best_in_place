@@ -3,16 +3,18 @@ module BestInPlace
     extend self
 
     class Renderer < Struct.new(:opts)
-      def render_json(object)
+      
+      def render_json object
+        resp = {:original_value => object.send(opts[:attr])}
         case opts[:type]
         when :model
-          {:display_as => object.send(opts[:method])}.to_json
+          resp[:display_as] = object.send(opts[:method])
         when :helper
-          {:display_as => BestInPlace::ViewHelpers.send(opts[:method], object.send(opts[:attr]))}.to_json
-        else
-          {}.to_json
+          resp[:display_as] = BestInPlace::ViewHelpers.send(opts[:method], object.send(opts[:attr]))
         end
+        resp.to_json
       end
+      
     end
 
     @@table = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -24,7 +26,7 @@ module BestInPlace
     end
 
     def add_model_method(klass, attr, display_as)
-      @@table[klass.to_s][attr.to_s] = Renderer.new :method => display_as.to_sym, :type => :model
+      @@table[klass.to_s][attr.to_s] = Renderer.new :method => display_as.to_sym, :type => :model, :attr => attr
     end
 
     def add_helper_method(klass, attr, helper_method)
@@ -38,6 +40,10 @@ module BestInPlace
     def lookup_siblings klass, attr
       foo = @@update_with_table[klass.to_s][attr.to_s]
       foo == {} ? nil : foo
+    end
+    
+    def render_multiple obj, klass, attributes
+      Hash[ attributes.map{ |attr| [attr, (lookup(klass, attr).nil? ? Renderer.new(:attr => attr) : lookup(klass, attr))] }.map{ |k, v| [k, v.render_json(obj)]} ].to_json
     end
     
   end
