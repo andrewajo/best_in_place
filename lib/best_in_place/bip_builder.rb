@@ -16,9 +16,9 @@ module BestInPlace
         raise ArgumentError, "Can't use both 'display_as' and 'display_with' options at the same time"
       end
 
-      if opts[:display_with] && !ViewHelpers.respond_to?(opts[:display_with])
-        raise ArgumentError, "Can't find helper #{opts[:display_with]}"
-      end
+      #if opts[:display_with] && !ViewHelpers.respond_to?(opts[:display_with])
+      #  raise ArgumentError, "Can't find helper #{opts[:display_with]}"
+      #end
 
       opts[:type] ||= :input
       opts[:collection] ||= []
@@ -95,7 +95,11 @@ module BestInPlace
 
       elsif opts[:display_with]
         BestInPlace::DisplayMethods.add_helper_method(@object.class.to_s, field, opts[:display_with])
-        BestInPlace::ViewHelpers.send(opts[:display_with], @object.send(field))
+        if ViewHelpers.respond_to?(opts[:display_with])
+          BestInPlace::ViewHelpers.send(opts[:display_with], @object.send(field))
+        else
+          @template.send opts[:display_with], @object.send(field)
+        end
 
       else
         @object.send(field).to_s.presence || ""

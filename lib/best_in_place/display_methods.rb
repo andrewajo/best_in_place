@@ -4,13 +4,13 @@ module BestInPlace
 
     class Renderer < Struct.new(:opts)
       
-      def render_json object
+      def render_json object, view_context=nil
         resp = {:original_value => object.send(opts[:attr])}
         case opts[:type]
         when :model
           resp[:display_as] = object.send(opts[:method])
         when :helper
-          resp[:display_as] = BestInPlace::ViewHelpers.send(opts[:method], object.send(opts[:attr]))
+          resp[:display_as] =  BestInPlace::ViewHelpers.respond_to?(opts[:method]) ? BestInPlace::ViewHelpers.send(opts[:method], object.send(opts[:attr])) : view_context.send(opts[:method], object.send(opts[:attr]))
         end
         resp.to_json
       end
@@ -42,8 +42,8 @@ module BestInPlace
       foo == {} ? nil : foo
     end
     
-    def render_multiple obj, klass, attributes
-      Hash[ attributes.map{ |attr| [attr, (lookup(klass, attr).nil? ? Renderer.new(:attr => attr) : lookup(klass, attr))] }.map{ |k, v| [k, v.render_json(obj)]} ].to_json
+    def render_multiple obj, klass, attributes, view_context=nil
+      Hash[ attributes.map{ |attr| [attr, (lookup(klass, attr).nil? ? Renderer.new(:attr => attr) : lookup(klass, attr))] }.map{ |k, v| [k, v.render_json(obj, view_context)]} ].to_json
     end
     
   end
