@@ -11,7 +11,7 @@ module BestInPlace
       single_renderer, siblings = renderers(klass, updating_attr)
       if siblings.nil?
         if single_renderer
-          render :json => single_renderer.render_json(obj, view_context=nil)
+          render :json => single_renderer.render_json(obj, view_context)
         else
           head :ok
         end
